@@ -1,54 +1,13 @@
+import { useState } from 'react'
 import heroProductsImg from '../assets/hero-products.jpg'
-import ProductCard, { type Product } from '../components/ProductCard'
-
-const SAMPLE_PRODUCTS: Product[] = [
-  {
-    id: 'keychain-01',
-    name: 'Personalized Dual-Tone Keychain',
-    category: 'Personalized Gifts',
-    tag: 'Custom Name',
-    description:
-      'Crisp debossed lettering with contrasting backing and stainless steel split ring. Tailored for everyday carry.',
-    specs: 'PLA+ • 0.16mm layer height • 2-tone',
-    priceInr: 249,
-    placeholderType: 'keychain',
-  },
-  {
-    id: 'dragon-02',
-    name: 'Articulated Crystal Dragon',
-    category: 'Fidgets & Toys',
-    tag: 'Print-in-Place',
-    description:
-      'Fluidly moving dragon with interconnected ball-and-socket links printed in a single build. Satisfying tactile fidgeting.',
-    specs: 'Silk PLA • Flexible joints • No assembly',
-    priceInr: 599,
-    placeholderType: 'dragon',
-  },
-  {
-    id: 'planter-03',
-    name: 'Geometric Dodecahedron Planter',
-    category: 'Desk Accessories',
-    tag: 'Workspace',
-    description:
-      'Low-polygon faceted planter designed for succulents and small desk plants. Includes hidden drainage tray.',
-    specs: 'Matte Terracotta PETG • Water-resistant',
-    priceInr: 449,
-    placeholderType: 'planter',
-  },
-  {
-    id: 'nameplate-04',
-    name: 'Bespoke Arch Desk Nameplate',
-    category: 'Custom Prints',
-    tag: 'Personalized',
-    description:
-      'Sleek curved arch display with custom raised typography and weighted cantilevered stand. Anchors your office setup.',
-    specs: 'Ivory PLA • Embossed lettering',
-    priceInr: 699,
-    placeholderType: 'nameplate',
-  },
-]
+import ProductCard from '../components/ProductCard'
+import ProductModal from '../components/ProductModal'
+import { FEATURED_PRODUCTS, type Product } from '../data/products'
+import { CATEGORIES } from '../data/categories'
 
 export default function HomePage() {
+  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null)
+
   return (
     <>
       {/* ── Section 1: Hero Section ─────────────────────────────── */}
@@ -126,111 +85,60 @@ export default function HomePage() {
           </div>
 
           <div className="categories-grid">
-            {/* Category 1: Personalized Gifts */}
-            <a href="#products" className="category-card" aria-label="Explore Personalized Gifts category">
-              <div className="category-card__icon-wrap" aria-hidden="true">
-                <svg
-                  width="24"
-                  height="24"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                >
-                  <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z" />
-                  <line x1="7" y1="7" x2="7.01" y2="7" />
-                </svg>
-              </div>
-              <h3 className="category-card__label">Personalized Gifts</h3>
-              <p className="category-card__desc">
-                Custom dual-tone name keychains, anniversary tags, and keepsake plaques.
-              </p>
-              <span className="category-card__arrow" aria-hidden="true">
-                Browse Collection &rarr;
-              </span>
-            </a>
+            {CATEGORIES.map((cat) => (
+              <a
+                key={cat.id}
+                href={cat.href}
+                className="category-card"
+                aria-label={`Explore ${cat.name} category`}
+              >
+                <div className="category-card__header-row">
+                  <div className="category-card__icon-wrap" aria-hidden="true">
+                    {cat.id === 'personalized-gifts' && (
+                      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                        <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z" />
+                        <line x1="7" y1="7" x2="7.01" y2="7" />
+                      </svg>
+                    )}
+                    {cat.id === 'fidgets-toys' && (
+                      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                        <circle cx="12" cy="12" r="3" />
+                        <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z" />
+                      </svg>
+                    )}
+                    {cat.id === 'desk-accessories' && (
+                      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                        <rect x="2" y="3" width="20" height="14" rx="2" />
+                        <line x1="8" y1="21" x2="16" y2="21" />
+                        <line x1="12" y1="17" x2="12" y2="21" />
+                      </svg>
+                    )}
+                    {cat.id === 'custom-prints' && (
+                      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                        <polyline points="16 18 22 12 16 6" />
+                        <polyline points="8 6 2 12 8 18" />
+                        <line x1="14" y1="4" x2="10" y2="20" />
+                      </svg>
+                    )}
+                  </div>
+                  <span className="category-card__pill">{cat.badge}</span>
+                </div>
 
-            {/* Category 2: Fidgets & Toys */}
-            <a href="#products" className="category-card" aria-label="Explore Fidgets & Toys category">
-              <div className="category-card__icon-wrap" aria-hidden="true">
-                <svg
-                  width="24"
-                  height="24"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                >
-                  <circle cx="12" cy="12" r="3" />
-                  <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z" />
-                </svg>
-              </div>
-              <h3 className="category-card__label">Fidgets & Toys</h3>
-              <p className="category-card__desc">
-                Multi-segmented articulated dragons, gyroscopic desk spinners, and tactile fidgets.
-              </p>
-              <span className="category-card__arrow" aria-hidden="true">
-                Browse Collection &rarr;
-              </span>
-            </a>
+                <div className="category-card__body">
+                  <span className="category-card__tagline">{cat.tagline}</span>
+                  <h3 className="category-card__label">{cat.name}</h3>
+                  <p className="category-card__desc">{cat.description}</p>
+                </div>
 
-            {/* Category 3: Desk Accessories */}
-            <a href="#products" className="category-card" aria-label="Explore Desk Accessories category">
-              <div className="category-card__icon-wrap" aria-hidden="true">
-                <svg
-                  width="24"
-                  height="24"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                >
-                  <rect x="2" y="3" width="20" height="14" rx="2" />
-                  <line x1="8" y1="21" x2="16" y2="21" />
-                  <line x1="12" y1="17" x2="12" y2="21" />
-                </svg>
-              </div>
-              <h3 className="category-card__label">Desk Accessories</h3>
-              <p className="category-card__desc">
-                Geometric succulent planters, architectural cable catchers, and nameplates.
-              </p>
-              <span className="category-card__arrow" aria-hidden="true">
-                Browse Collection &rarr;
-              </span>
-            </a>
-
-            {/* Category 4: Custom Prints */}
-            <a href="#custom" className="category-card" aria-label="Explore Custom 3D Prints">
-              <div className="category-card__icon-wrap" aria-hidden="true">
-                <svg
-                  width="24"
-                  height="24"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                >
-                  <polyline points="16 18 22 12 16 6" />
-                  <polyline points="8 6 2 12 8 18" />
-                  <line x1="14" y1="4" x2="10" y2="20" />
-                </svg>
-              </div>
-              <h3 className="category-card__label">Custom Prints</h3>
-              <p className="category-card__desc">
-                Have your own .STL file or design idea? We slice and print custom commissions.
-              </p>
-              <span className="category-card__arrow" aria-hidden="true">
-                Start Custom Print &rarr;
-              </span>
-            </a>
+                <span className="category-card__arrow" aria-hidden="true">
+                  <span>Browse Collection</span>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                    <line x1="5" y1="12" x2="19" y2="12" />
+                    <polyline points="12 5 19 12 12 19" />
+                  </svg>
+                </span>
+              </a>
+            ))}
           </div>
         </div>
       </section>
@@ -250,16 +158,20 @@ export default function HomePage() {
           </div>
 
           <div className="products-grid">
-            {SAMPLE_PRODUCTS.map((product) => (
-              <ProductCard key={product.id} product={product} />
+            {FEATURED_PRODUCTS.map((product) => (
+              <ProductCard
+                key={product.id}
+                product={product}
+                onSelectProduct={(p) => setSelectedProduct(p)}
+              />
             ))}
           </div>
 
           {/* Illustrative Demo Notice */}
           <div className="demo-notice" role="note" aria-label="Demo catalog disclaimer">
             <strong>Illustrative Demo Catalog:</strong> Products, specifications, and sample
-            INR prices above are shown for design and layout preview. Actual inventory
-            verification and e-commerce checkout will be enabled in subsequent milestones.
+            INR prices above are shown for design and layout preview. Click <em>“View Product”</em> on
+            any item to inspect detailed 3D fabrication specs and studio photography.
           </div>
         </div>
       </section>
@@ -483,6 +395,12 @@ export default function HomePage() {
           </div>
         </div>
       </section>
+
+      {/* ── Product Details Modal Preview ───────────────────────── */}
+      <ProductModal
+        product={selectedProduct}
+        onClose={() => setSelectedProduct(null)}
+      />
     </>
   )
 }
