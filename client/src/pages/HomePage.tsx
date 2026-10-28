@@ -162,7 +162,10 @@ export default function HomePage() {
               <ProductCard
                 key={product.id}
                 product={product}
-                onSelectProduct={(p) => setSelectedProduct(p)}
+                onSelectProduct={(p) => {
+                  window.location.hash = `#/product/${p.slug}`
+                }}
+                onQuickView={(p) => setSelectedProduct(p)}
               />
             ))}
           </div>

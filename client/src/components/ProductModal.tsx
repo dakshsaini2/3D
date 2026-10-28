@@ -356,11 +356,14 @@ export default function ProductModal({ product, onClose }: ProductModalProps) {
             {/* Modal Actions */}
             <div className="product-modal__actions">
               <a
-                href="#custom"
+                href={`#/product/${product.slug}`}
                 className="btn-primary"
-                onClick={onClose}
+                onClick={() => {
+                  onClose()
+                  window.location.hash = `#/product/${product.slug}`
+                }}
               >
-                Inquire About Customization
+                Customize & View Details →
               </a>
               <button
                 type="button"

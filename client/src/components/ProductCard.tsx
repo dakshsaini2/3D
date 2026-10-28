@@ -4,6 +4,7 @@ import type { Product, PlaceholderType } from '../types'
 interface ProductCardProps {
   product: Product
   onSelectProduct?: (product: Product) => void
+  onQuickView?: (product: Product) => void
 }
 
 function FallbackBlueprint({ type }: { type: PlaceholderType }) {
@@ -108,11 +109,27 @@ function FallbackBlueprint({ type }: { type: PlaceholderType }) {
   }
 }
 
-export default function ProductCard({ product, onSelectProduct }: ProductCardProps) {
+export default function ProductCard({
+  product,
+  onSelectProduct,
+  onQuickView,
+}: ProductCardProps) {
   const [imageError, setImageError] = useState(false)
 
   const handleCardClick = () => {
-    onSelectProduct?.(product)
+    if (onSelectProduct) {
+      onSelectProduct(product)
+    } else {
+      window.location.hash = `#/product/${product.slug}`
+    }
+  }
+
+  const handleImageClick = () => {
+    if (onQuickView) {
+      onQuickView(product)
+    } else {
+      handleCardClick()
+    }
   }
 
   const focalPoint = product.image.focalPoint ?? product.imageFocalPoint ?? {
@@ -133,16 +150,16 @@ export default function ProductCard({ product, onSelectProduct }: ProductCardPro
       {/* Product Image Area */}
       <div
         className="product-card__image"
-        onClick={handleCardClick}
+        onClick={handleImageClick}
         role="button"
         tabIndex={0}
         onKeyDown={(e) => {
           if (e.key === 'Enter' || e.key === ' ') {
             e.preventDefault()
-            handleCardClick()
+            handleImageClick()
           }
         }}
-        aria-label={`View ${product.name} image and specifications`}
+        aria-label={`Preview ${product.name} image and specifications`}
       >
         {!imageError && imgSrc ? (
           <div
