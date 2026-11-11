@@ -9,7 +9,7 @@ articulated toys, desk accessories, nameplates, and custom prints.
 - **Backend:** Node.js + Express
 - **Database:** PostgreSQL (Docker)
 
-## Project Status
+## Project Status 
 
 Under active development.
 soon to be developed....
